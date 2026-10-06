@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Untitled</title>
+  </head>
+  <body>
+    <script src="nn.min.js"></script>
+    <script>
+    let hg, hi
+    
+    function setup (){
+      
+      hg = nn.randomColor()
+      hi = nn.randomColor()
+      
+      while (nn.colorContrast(hg, hi) < 1.4) {
+        hg = nn.randomColor()
+      }
+      
+      nn.get('body')
+      .content('hello ms B')
+      .css({
+        color: hg,
+        backgroung: 'hi',
+        overflow: 'hidden',
+        height: '100vh',
+        display: 'grid',
+        alignItems: 'center',
+        justifyContent: 'center'
+        fontsize: 72
+      })
+      // run the createGif function 5o times
+      nn.times(55, createGif)
+    }
+      function createGif () {
+        
+        const x = nn.random(-100, nn.width + 100)
+        const y = nn.random(-100, nn.height + 100)
+        const r = nn.random(360)
+        const c = nn.toHSL(hg)
+        
+        nn.create('img')
+        .set('src', 'star.png')
+        .addTo('body')
+        .position(x, y)
+        .rotate(r)
+        .hueRotate(60 - c.h)
+        .saturate(c.s / 100)
+        .brightness(c.l / 100)
+        .css({
+          cursor: 'grab',
+          userSelect: 'none',
+          transition: 'all 1.5s ease-out'
+        })
+        .on('mouseover', async function () {
+          this.scale(3)
+          this.css('opacity', 0)
+          this.rotate(r - 180)
+          await nn.sleep(1500)
+          this.remove()
+        })
+      }
+      function update () {
+        nn.getAll('img').forEach(img => img.remove())
+        setup()
+      }
+      
+      nn.on('load', setup)
+      nn.on('click', update)
+  
+    </script>
+  </body>
+</html>
